@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="com.SpringBoot.MBlog.Admin.mapper.ForumMapper">
+	<resultMap type="Map" id="ForumVo">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="code" column="code"/>
+		<result property="status" column="status"/>
+		<result property="weight" column="weight"/>
+        <collection property="articleCount" column="id" select="findArtCount">	
+        </collection>
+	</resultMap>
+	<!-- 使用Mybatis的collection嵌套查询配合map类型实现，当实体类没有某个字段而我们又需要时 -->
+	<select id="findForumVos" resultMap="ForumVo">
+		select  blog_forum.*
+		FROM blog_forum
+		<where>
+			<if test="name != null and name != '' ">
+				and blog_forum.name = #{name}
+			</if>
+			<if test="status != null">
+				and blog_forum.status = #{status}
+			</if>
+		</where>
+	</select>
+	<select id="findArtCount" parameterType="java.lang.Long" resultType="int">
+		select count(id)
+		from blog_article
+		where group_id=#{id}
+	</select>
+	<select id="findForumById" parameterType="java.lang.Long" resultType="com.SpringBoot.MBlog.entity.Forum">
+		select *
+		from blog_forum
+		where id=#{id}
+	</select>
+	<select id="findForumByWeight" parameterType="java.lang.Integer" resultType="com.SpringBoot.MBlog.entity.Forum">
+		select *
+		from blog_forum
+		where weight=#{weight}
+	</select>
+	<select id="findForumByName" parameterType="java.lang.String" resultType="com.SpringBoot.MBlog.entity.Forum">
+		select *
+		from blog_forum
+		where name=#{name}
+	</select>
+	<select id="findForumByCode" parameterType="java.lang.String" resultType="com.SpringBoot.MBlog.entity.Forum">
+		select *
+		from blog_forum
+		where code=#{code}
+	</select>
+	<select id="findStatusCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		select count(id)
+		from blog_forum
+		where status=#{status}
+	</select>
+	<select id="findListByStatus" parameterType="java.lang.Integer" resultType="com.SpringBoot.MBlog.entity.Forum">
+		select *
+		from blog_forum
+		where status=#{status}
+		order By weight asc
+	</select>
+	<update id="editForum" parameterType="com.SpringBoot.MBlog.entity.Forum">
+		update blog_forum 
+		set 
+			blog_forum.name=#{name},
+			blog_forum.code=#{code},
+			blog_forum.status=#{status},
+			blog_forum.weight=#{weight}
+		where
+			blog_forum.id=#{id}
+	</update>
+	<delete id="delForumById" parameterType="java.lang.Long">
+		delete from blog_forum
+		where id=#{id}
+	</delete>
+	<insert id="insertForum" parameterType="com.SpringBoot.MBlog.entity.Forum">
+		insert into blog_forum(name,code,status,weight)
+		values(#{name},#{code},#{status},#{weight})
+	</insert>
+</mapper>

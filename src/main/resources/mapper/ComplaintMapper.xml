@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="com.SpringBoot.MBlog.Admin.mapper.ComplaintMapper">
+	<resultMap type="Map" id="ComplaintArt">
+		<result property="id" column="id"/>
+		<result property="created" column="created"/>
+		<result property="genre" column="genre"/>
+		<result property="remarks" column="remarks"/>
+		<result property="handle" column="handle"/>
+		<association property="target_art" column="article_id" javaType="com.SpringBoot.MBlog.entity.Article">
+			<result  property="id" column="article_id"/>
+	    	<result property="title" column="title"/>
+	    	<result property="content" column="content"/>
+	    	<result property="createTime" column="create_time"/>
+	    	<result property="hits" column="hits"/>
+		</association>
+        <collection property="complaintCount" column="article_id" select="findComplaintCount">	
+        </collection>
+	</resultMap>
+	<resultMap type="Map" id="ComplaintUser">
+		<result property="id" column="id"/>
+		<result property="created" column="created"/>
+		<result property="genre" column="genre"/>
+		<result property="remarks" column="remarks"/>
+		<result property="handle" column="handle"/>
+		<association property="target_user" column="user_id" javaType="com.SpringBoot.MBlog.entity.User">
+			<result  property="id" column="user_id"/>
+	    	<result property="nickname" column="nickname"/>
+	    	<result property="username" column="username"/>
+	    	<result property="createTime" column="create_time"/>
+	    	<result property="email" column="email"/>
+		</association>
+        <collection property="complaintCount_user" column="user_id" select="findComplaintCountByUser">	
+        </collection>
+	</resultMap>
+	<resultMap type="com.SpringBoot.MBlog.entity.Complaint" id="ComplaintAll">
+		<result property="id" column="id"/>
+		<result property="created" column="created"/>
+		<result property="genre" column="genre"/>
+		<result property="remarks" column="remarks"/>
+		<result property="handle" column="handle"/>
+		<association property="target_user" column="user_id" javaType="com.SpringBoot.MBlog.entity.User">
+			<result  property="id" column="user_id"/>
+	    	<result property="nickname" column="nickname"/>
+	    	<result property="username" column="username"/>
+	    	<result property="createTime" column="create_time"/>
+	    	<result property="email" column="email"/>
+		</association>
+		<association property="target_art" column="article_id" javaType="com.SpringBoot.MBlog.entity.Article">
+			<result  property="id" column="article_id"/>
+	    	<result property="title" column="title"/>
+	    	<result property="createTime" column="create_time"/>
+	    	<result property="hits" column="hits"/>
+		</association>
+	</resultMap>
+	<select id="findComplaintArt" resultMap="ComplaintArt">
+		select  blog_complaint.*,blog_article.*
+		FROM blog_complaint
+		left join blog_article on  blog_complaint.article_id=blog_article.id
+		where blog_complaint.type = 1
+		<trim suffixOverrides="AND | OR"> 
+			<if test="art_id != null and art_id != '' ">
+				and blog_complaint.article_id = #{art_id}
+			</if>
+			<if test="handle != null and handle != '' ">
+				and blog_complaint.handle = #{handle}
+			</if>
+		</trim>
+	</select>
+	<select id="findComplaintUser" resultMap="ComplaintUser">
+		select  blog_complaint.*,blog_user.*
+		FROM blog_complaint
+		left join blog_user on  blog_complaint.user_id=blog_user.id
+		where blog_complaint.type = 0
+		<trim suffixOverrides="AND | OR"> 
+			<if test="user_id != null and user_id != '' ">
+				and blog_complaint.user_id = #{user_id}
+			</if>
+			<if test="handle != null and handle != '' ">
+				and blog_complaint.handle = #{handle}
+			</if>
+		</trim>
+	</select>
+	<select id="findComplaintCount" parameterType="java.lang.Long" resultType="int">
+		select count(id)
+		from blog_complaint
+		where article_id=#{article_id}
+	</select>
+	<select id="findComplaintCountByUser" parameterType="java.lang.Long" resultType="int">
+		select count(id)
+		from blog_complaint
+		where user_id=#{user_id}
+	</select>
+	<select id="findComplaintById" parameterType="java.lang.Long" resultMap="ComplaintAll">
+		select blog_complaint.*,blog_user.*,blog_article.*
+		from blog_complaint
+		left join blog_user on  blog_complaint.user_id=blog_user.id
+		left join blog_article on blog_complaint.article_id=blog_article.id
+		where blog_complaint.id=#{id}
+	</select>
+	<update id="editHandle" parameterType="com.SpringBoot.MBlog.entity.Complaint">
+		update blog_complaint 
+		set 
+			blog_complaint.handle=#{handle}
+		where
+			blog_complaint.id=#{id}
+	</update>
+	<select id="findComplaintListByArtId" parameterType="java.lang.Long" resultType="com.SpringBoot.MBlog.entity.Complaint">
+		select blog_complaint.*
+		from blog_complaint
+		where type=1 and article_id=#{art_id}
+	</select>
+	<select id="findComplaintListByUserId" parameterType="java.lang.Long" resultType="com.SpringBoot.MBlog.entity.Complaint">
+		select blog_complaint.*
+		from blog_complaint
+		where type=0 and user_id=#{user_id}
+	</select>
+</mapper>

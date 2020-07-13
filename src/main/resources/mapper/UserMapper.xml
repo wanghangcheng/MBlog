@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="com.SpringBoot.MBlog.Admin.mapper.UserMapper">
+
+	<resultMap type="com.SpringBoot.MBlog.entity.User" id="UserAll">
+		<result property="id" column="id"/>
+		<result property="username" column="username"/>
+		<result property="salt" column="salt"/>
+		<result property="email" column="email"/>
+		<result property="phone" column="phone"/>
+		<result property="sex" column="sex"/>
+		<result property="nickname" column="nickname"/>
+		<result property="sign" column="sign"/>
+		<result property="avatar" column="avatar"/>
+		<result property="createTime" column="create_time"/>
+		<result property="state" column="state"/>
+		<association property="power" column="power_id" javaType="com.SpringBoot.MBlog.entity.User_Power">
+	    	<result  property="id" column="id"/>
+	    	<result  property="role" column="role"/>
+	    	<result  property="user.id" column="user_id"/>
+        </association>
+	</resultMap>
+	<resultMap type="Map" id="UserVo">
+		<result property="id" column="id"/>
+		<result property="username" column="username"/>
+		<result property="email" column="email"/>
+		<result property="phone" column="phone"/>
+		<result property="sex" column="sex"/>
+		<result property="nickname" column="nickname"/>
+		<result property="createTime" column="create_time"/>
+		<result property="state" column="state"/>
+		<result property="last_login_time" column="last_login_time"/>
+		<association property="power" column="power_id" javaType="com.SpringBoot.MBlog.entity.User_Power">
+	    	<result  property="id" column="id"/>
+	    	<result  property="role" column="role"/>
+	    	<result  property="user.id" column="user_id"/>
+        </association>
+        <collection property="articleCount" column="id" select="findArtCount">	
+        </collection>
+        <collection property="fansCount" column="id" select="findFansCount">	
+        </collection> 
+	</resultMap>
+	<select id="ApiFindUserAll"  parameterType="int" resultMap="UserAll">
+		select blog_user.*,blog_power.* ,f.target_id,f.fansnum
+		from blog_user,blog_power,(SELECT target_id,count(id) fansnum from blog_follows GROUP BY blog_follows.target_id) f
+		where blog_user.power_id = blog_power.id AND blog_user.id = f.target_id
+		order by f.fansnum desc
+		limit #{end}
+	</select>
+	<select id="findUserVos" resultMap="UserVo">
+		select  blog_user.*,
+				blog_power.*
+		FROM blog_user
+		left join blog_power on  blog_user.power_id = blog_power.id
+		<where>
+			<if test="nickname != null and nickname != '' ">
+				and blog_user.nickname = #{nickname}
+			</if>
+			<if test="beginDateTime != null and beginDateTime != '' ">
+				and blog_user.create_time &gt;= #{beginDateTime}
+			</if>
+			<if test="endDateTime != null and endDateTime != '' ">
+				and blog_user.create_time &lt;= #{endDateTime}
+			</if>
+			<if test="state != null "> 
+				and blog_user.state = #{state}
+			</if>
+			<if test="role != null ">
+				and blog_power.role = #{role}
+			</if>
+		</where>
+	</select>
+	<select id="findArtCount" parameterType="java.lang.Long" resultType="int">
+		select count(id)
+		from blog_article
+		where user_id=#{id}
+	</select>
+	<select id="findFansCount" parameterType="java.lang.Long" resultType="int">
+		select count(id)
+		from blog_follows
+		where target_id=#{id}
+	</select>
+	<select id="findUserById" parameterType="java.lang.Long" resultMap="UserAll">
+		select blog_user.*,blog_power.*
+		from blog_user,blog_power
+		where blog_user.id=#{id}
+	</select>
+	<update id="editUser">
+		UPDATE 
+			blog_user
+		LEFT JOIN
+			blog_power 
+		on
+			blog_user.id = blog_power.user_id
+		set
+			blog_user.username = #{username},
+			blog_user.email = #{email},
+			blog_user.state = #{state},
+			blog_power.role = #{role}
+		where
+			blog_user.id = #{userId}
+	</update>
+	<delete id="delUser" parameterType="java.lang.Long">
+		delete from blog_user 
+		where id = #{id}
+	</delete>
+	<delete id="delNotifyByUser" parameterType="java.lang.Long">
+		delete from blog_notify
+		where user_id = #{u_id}
+	</delete>
+	<select id="findUserByNickname" resultType="com.SpringBoot.MBlog.entity.User">
+		select * from blog_user where nickname = #{nickname}
+	</select>
+	<select id="findUserByUsername" resultType="com.SpringBoot.MBlog.entity.User">
+		select * from blog_user where username = #{username}
+	</select>
+</mapper>

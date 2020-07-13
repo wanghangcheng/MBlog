@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>登录 - MGblog</title>
+    <meta name="keywords" content="MGblog,$!{site_keywords}">
+    <meta name="description" content="$!{site_description}">
+    <!-- v3 -->
+    <link rel="stylesheet" href="./assets/vendors/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/css/login.css">
+    <link rel="stylesheet" href="./assets/vendors/animate/animate.min.css">
+
+    <!-- JavaScript -->
+    <script type="text/javascript" src="./assets/js/jquery.min.js"></script>
+    <script type="text/javascript" src="./assets/js/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="./assets/vendors/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/vendors/validate/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="/assets/vendors/validate/messages_zh.min.js"></script>
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon-precomposed" href="http://mtons.com/assets/images/logo/m99.png"/>
+    <link rel="shortcut icon" href="http://mtons.com/assets/images/logo/m.png"/>
+    <script type="text/javascript" src="/assets/js/layer3.1/layer.js"></script>
+
+</head>
+<body class="sign">
+<div class="login">
+    <!--
+    <div class="vegas-overlay" style="opacity: 0.2; margin: 0px; padding: 0px; position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; background-image: url(/assets/images/overlay.png); z-index: -1;"></div>
+    -->
+
+    <a href="/forum/blog">
+        <img src="./assets/images/logo/m11.png" height="100" width="100">
+    </a>
+    <h1>MGblog, 轻松分享你的兴趣</h1>
+    <hr>
+    <form action="login" method="post">
+        <div id="message">
+        </div>
+        <label for="id_email">登录名:</label>
+        <div id="id_email">
+            <input name="username" class="form-control border" placeholder="用户名/邮箱" type="text" data-required>
+        </div>
+        <label for="id_password">密码:</label>
+        <div id="id_password">
+            <input name="password" class="form-control border" placeholder="密码" type="password" data-required>
+        </div>
+        <!-- 
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="rememberMe" value="1"> 记住登录？
+            </label>
+        </div>
+		-->
+        <div style="margin-top: 15px;">
+            <input type="submit" class="btn btn-success border" value="登录 Use it">
+
+            <div class="forgot">
+                <a href="/register.html">
+                    	注册
+                </a>
+                 <a href="/public/forgot">
+                	    忘记密码
+                </a>
+            </div>
+        </div>
+    </form>
+   <!--  <div class="with-line">使用第三方帐号登录</div>
+    <div class="buttons">
+        <a href="javascript:void(0);" title="微博帐号登录" rel="nofollow" class="weibo"></a>./oauth/callback/call_weibo
+        <a href="javascript:void(0);" title="QQ帐号登录" rel="nofollow" class="qzone"></a>./oauth/callback/call_qq
+        <a href="javascript:void(0);" title="豆瓣帐号登录" rel="nofollow" class="douban"></a>./oauth/callback/call_douban
+    </div> -->
+</div>
+
+<script type="text/javascript">
+    $(function () {
+
+    	$("form").validate({
+            debug : true,
+            rules :{
+              username: {
+                required: true,
+                minlength: 3
+              },
+              password : {
+                required: true,
+                minlength: 5
+              },
+            },
+            messages: {
+              username: {
+                required: "请输入用户名",
+                minlength: "用户名长度不能小于 3"
+              },
+              password: {
+                required: "请输入登录密码",
+                minlength: "密码长度不能小于 5"
+              },
+            },
+             errorPlacement:function(error,element) {  
+            	element.popover('destroy');
+                element.popover({
+                    content:error[0].innerHTML
+                });
+                element.click();
+                element.closest('div').removeClass('has-success').addClass('has-error');
+             },
+             success: function(a, b){
+             
+                $(b).parent().removeClass('has-error').addClass('has-success');
+                $(b).popover('destroy');
+             },
+             //验证通过后执行这里，发送数据到后端
+            submitHandler: function(form){
+            	var layer1 = layer.msg('正在处理登录信息...', {
+            		  		icon: 16,
+            		 		shade: 0.5,
+            		  		time: 0,
+            			});
+            	
+            	$.ajax({ 
+            		type: "POST",
+            		url: "/public/login",
+            		data: $(form).serialize(),
+            		success: function(data){
+                    	layer.close(layer1);
+                    	if(data.code==100){
+    						layer.msg(data.msg, function(){});
+    					}
+                    	if(data.code==103){
+    						layer.msg(data.msg, function(){});
+    					}
+    					if(data.code==200){
+    						layer.msg('恭喜，登录成功，2秒后为你跳转个人中心', {icon: 6});
+    						setTimeout(function(){
+    							window.location.href='/home/index.html';
+    						},2000);
+    					}
+                    },
+                    error: function(XMLHttpRequest,textStatus,errorThrown){
+                    	layer.close(layer1);
+                    	layer.msg('服务器通讯错误', {icon: 5});
+                    },
+            	});
+            	
+            }
+        });
+
+    })
+</script>
+
+
+    <p class="small">
+     <a href="http://www.miitbeian.gov.cn/" target="_blank">
+    </p>
+
+    <script type="text/javascript">
+        //<!CDATA[
+        var bodyBgs = [];
+        bodyBgs[0] = "/assets/images/first/bg-1.jpg";
+        bodyBgs[1] = "/assets/images/first/bg-2.jpg";
+        bodyBgs[2] = "/assets/images/first/bg-3.jpg";
+        bodyBgs[3] = "/assets/images/first/bg-4.jpg";
+        bodyBgs[4] = "/assets/images/first/bg-5.jpg";
+        bodyBgs[5] = "/assets/images/first/bg-9.jpg";
+        var randomBgIndex = Math.round( Math.random() * 5 );
+        //输出随机的背景图
+        document.write('<style>body{background:url(' + bodyBgs[randomBgIndex] + ') no-repeat 100% 0}</style>');
+        //]]>
+    </script>
+</body>
+</html>
+
+

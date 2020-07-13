@@ -1,0 +1,30 @@
+/*
++--------------------------------------------------------------------------
+|   你可以在此处定制你的样式代码
++---------------------------------------------------------------------------
+*/
+.widget-box .box-list li span.newname{
+	width: 320px;
+}
+.widget-box .box-list li span h2{
+	font-size: 18px;
+    /*font-weight: bold;*/
+    line-height: 24px;
+    height: 24px;
+    margin-bottom: 4px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.widget-box .box-list li span.over{
+	overflow: hidden;
+	margin-left:20px;
+	float:right;
+}
+.widget-box .box-list li span.counts{
+	float:right;
+}
+.widget-box .box-list .li-out_new{
+	overflow: hidden;
+    margin-top: 10px;
+}

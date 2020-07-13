@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="com.SpringBoot.MBlog.Admin.mapper.ArticleMapper">
+
+	<resultMap type="com.SpringBoot.MBlog.entity.Article" id="ArticleAll">
+		<result property="id" column="id"/>
+		<result property="title" column="title"/>
+		<result property="content" column="content"/>
+		<result property="createTime" column="create_time"/>
+		<result property="hits" column="hits"/>
+		<result property="cream" column="cream"/>
+		<result property="top" column="top"/>
+		<association property="user" column="user_id" javaType="com.SpringBoot.MBlog.entity.User">
+	    	<result  property="id" column="user_id"/>
+	    	<result property="nickname" column="nickname"/>
+	    	<result property="username" column="username"/>
+	    	<result property="avatar" column="avatar"/>
+	    	<result property="email" column="email"/>
+        </association>
+        <association property="forum" column="group_id" javaType="com.SpringBoot.MBlog.entity.Forum">
+	    	<result  property="id" column="group_id"/>
+	    	<result property="name" column="name"/>
+	    	<result property="status" column="status"/>
+	    	<result property="code" column="code"/>
+	    	<result property="weight" column="weight"/>
+        </association>
+	</resultMap >
+	<resultMap type="com.SpringBoot.MBlog.entity.Article" id="HomeArt">
+		<result property="id" column="id"/>
+		<result property="title" column="title"/>
+		<result property="content" column="content"/>
+		<result property="createTime" column="create_time"/>
+		<result property="hits" column="hits"/>
+		<result property="cream" column="cream"/>
+		<result property="top" column="top"/>
+		<collection property="like" column="id" select="favorCount">	
+        </collection>
+        <collection property="comment" column="id" select="commentCount">	
+        </collection> 
+	</resultMap>
+	<select id="findHomeArtByCream" parameterType="int" resultMap="HomeArt">
+		select *
+		from blog_article
+		where cream=1
+		order by blog_article.create_time desc
+		limit #{end}
+	</select>
+	<select id="findHomeArtByHits" parameterType="int" resultMap="HomeArt">
+		select *
+		from blog_article
+		order by blog_article.hits desc
+		limit #{end}
+	</select>
+	<select id="favorCount" parameterType="java.lang.Long" resultType="int">
+		select count(id)
+		from blog_favor
+		where article_id=#{id}
+	</select>
+	<select id="commentCount" parameterType="java.lang.Long" resultType="int">
+		select count(id)
+		from blog_comment
+		where article_id=#{id}
+	</select>
+	<select id="ApiFindArtByTime"  parameterType="int" resultType="com.SpringBoot.MBlog.entity.Article">
+		select blog_article.*
+		from blog_article 
+		order by blog_article.create_time desc
+		limit #{end}
+	</select>
+	<select id="ApiFindArtByHit"  parameterType="int" resultType="com.SpringBoot.MBlog.entity.Article">
+		select blog_article.*
+		from blog_article
+		order by blog_article.hits desc
+		limit #{end}
+	</select>
+	<select id="findArticles" resultMap="ArticleAll">
+		select blog_article.*,blog_user.nickname,blog_user.email,blog_user.username,blog_forum.`code`,blog_forum.`name`,blog_forum.`status`
+		from blog_article
+		left join blog_user on  blog_article.user_id=blog_user.id
+		left join blog_forum on blog_article.group_id=blog_forum.id
+		<where>
+			<if test="nickname != null and nickname != '' ">
+				and blog_user.nickname = #{nickname}
+			</if>
+			<if test="artTitle != null and artTitle != '' ">
+				and blog_article.title = #{artTitle}
+			</if>
+			<if test="beginDateTime != null and beginDateTime != '' ">
+				and blog_article.create_time &gt;= #{beginDateTime}
+			</if>
+			<if test="endDateTime != null and endDateTime != '' ">
+				and blog_article.create_time &lt;= #{endDateTime}
+			</if>
+		</where>
+	</select>
+	<select id="findArtById" parameterType="java.lang.Long" resultMap="ArticleAll">
+		select * 
+		from blog_article
+		where id=#{id}
+	</select>
+	<delete id="delArtByUserId" parameterType="java.lang.Long">
+		delete from blog_article where user_id=#{u_id}
+	</delete>
+	<delete id="delArtTagById" parameterType="java.lang.Long">
+		delete from blog_article_tag where article_id=#{art_id}
+	</delete>
+	<delete id="delFavorByArtId" parameterType="java.lang.Long">
+		delete from blog_favor where article_id = #{art_id}
+	</delete>
+	<delete id="delFavorByUserId" parameterType="java.lang.Long">
+		delete from blog_favor where user_id = #{u_id}
+	</delete>
+	<delete id="delArtById" parameterType="java.lang.Long">
+		delete from blog_article where id = #{id}
+	</delete>
+	<select id="findArtsByUserId" parameterType="java.lang.Long" resultMap="ArticleAll">
+		select *
+		from blog_article
+		left join blog_user on  blog_article.user_id=blog_user.id
+		left join blog_forum on blog_article.group_id=blog_forum.id
+		where blog_article.user_id = #{id}
+	</select>
+	<select id="findArticlesByForumId" parameterType="java.lang.Long" resultMap="ArticleAll">
+		select *
+		from blog_article
+		left join blog_user on  blog_article.user_id=blog_user.id
+		left join blog_forum on blog_article.group_id=blog_forum.id
+		where blog_article.group_id = #{id}
+	</select>
+	<update id="EditArticlesByForumId" parameterType="java.lang.Long" >
+		update blog_article
+		set
+			blog_article.group_id=1
+		where 
+			blog_article.group_id=#{id}
+	</update>
+	<select id="findArtByTitle" resultType="com.SpringBoot.MBlog.entity.Article">
+		select * from blog_article where title like CONCAT(#{art_title})
+	</select>
+	<update id="editArt" parameterType="com.SpringBoot.MBlog.entity.Article">
+		update blog_article
+		set
+			blog_article.top=#{top},
+			blog_article.cream=#{cream}
+		where 
+			blog_article.id=#{id}
+	</update>
+</mapper>

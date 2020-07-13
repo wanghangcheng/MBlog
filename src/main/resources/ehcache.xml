@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 参数说明：
+	（0）diskStore： 临时缓存存放路径
+	（1）name：Cache的唯一标识。
+	（2）maxElementsInMemory：内存中最大缓存对象数。
+	（3）eternal：Element是否永久有效，一旦设置true，timeout将不起作用。
+	（4）timeToIdleSeconds：设置Element在失效前的允许闲置时间。仅当element不是永久有效时使用，可选属性，默认值是0，也就是可闲置时间无穷大。
+	（5）timeToLiveSeconds：设置Element在失效前允许存活时间。最大时间介于创建时间和失效时间之间。仅当element不是永久有效时使用，默认是0.，也就是element存活时间无穷大。
+	（6）overflowToDisk：配置此属性，当内存中Element数量达到maxElementsInMemory时，Ehcache将会Element写到磁盘中。
+	（7）maxElementsOnDisk：磁盘中最大缓存对象数，若是0表示无穷大。
+	（8）memoryStoreEvictionPolicy：当达到maxElementsInMemory限制时，Ehcache将会根据指定的策略 去清理缓存中的内容。默认策略是LRU（最近最少使用），你也可以设置为FIFO（先进先出）或是LFU（较少使用） 
+-->
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="ehcache.xsd"
+         updateCheck="false" monitoring="autodetect"
+         dynamicConfig="true">
+
+    <diskStore path="java.io.tmpdir"/>
+    
+    <defaultCache
+            maxElementsInMemory="10000"
+            eternal="true"
+            timeToIdleSeconds="120"
+            timeToLiveSeconds="120"
+            overflowToDisk="false"
+            diskPersistent="false"
+            diskExpiryThreadIntervalSeconds="120"
+            memoryStoreEvictionPolicy="LRU"
+            />
+            
+	<cache name="mytest" 
+		maxElementsInMemory="100000" 
+		eternal="true" 
+		overflowToDisk="false" 
+		memoryStoreEvictionPolicy="LRU">
+	</cache>
+
+	<cache name="Cache1" 
+		maxElementsInMemory="50000" 
+		eternal="false" 
+		timeToIdleSeconds="300"
+		timeToLiveSeconds="300"
+		overflowToDisk="false" 
+		memoryStoreEvictionPolicy="LRU"
+	/>
+	
+	<cache name="favorCount" 
+		maxElementsInMemory="50000" 
+		eternal="false" 
+		timeToIdleSeconds="300"
+		timeToLiveSeconds="300"
+		overflowToDisk="false" 
+		memoryStoreEvictionPolicy="LRU"
+	/>
+	
+	<cache name="CommentCount" 
+		maxElementsInMemory="50000" 
+		eternal="false" 
+		timeToIdleSeconds="300"
+		timeToLiveSeconds="300"
+		overflowToDisk="false" 
+		memoryStoreEvictionPolicy="LRU"
+	/>
+	
+	<cache name="articleTags" 
+		maxElementsInMemory="50000" 
+		eternal="false" 
+		timeToIdleSeconds="300"
+		timeToLiveSeconds="300"
+		overflowToDisk="false" 
+		memoryStoreEvictionPolicy="LRU"
+	/>
+	
+	<cache name="dayHits" 
+		maxEntriesLocalHeap="500" 
+		eternal="true" 
+		overflowToDisk="true">
+	</cache>
+	
+	<cache name="findArticle" 
+		maxElementsInMemory="50000" 
+		eternal="false" 
+		timeToIdleSeconds="120"
+		timeToLiveSeconds="120"
+		overflowToDisk="false" 
+		memoryStoreEvictionPolicy="LRU"
+	/>
+	
+</ehcache>

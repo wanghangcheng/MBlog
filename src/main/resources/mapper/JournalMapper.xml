@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="com.SpringBoot.MBlog.Admin.mapper.JournalMapper">
+	
+	<resultMap type="Map" id="JournalAll">
+		<result property="id" column="id"/>
+		<result property="content" column="content"/>
+		<result property="created" column="created"/>
+		<result property="type" column="type"/>
+		<association property="source_user" column="source_user_id" javaType="com.SpringBoot.MBlog.entity.User">
+			<result  property="id" column="source_user_id"/>
+	    	<result property="username" column="username"/>
+	    	<result property="nickname" column="nickname"/>
+	    	<result property="createTime" column="create_time"/>
+	    	<result property="email" column="email"/>
+		</association>
+	</resultMap>
+	<select id="findJournals" resultMap="JournalAll">
+		select  blog_journal.*,blog_user.*
+		FROM blog_journal
+		left join blog_user on  blog_journal.source_user_id=blog_user.id
+		<where>
+			<if test="user_id != null and user_id != '' ">
+				and blog_journal.source_user_id = #{user_id}
+			</if>
+			<if test="type != null and type != '' ">
+				and blog_journal.type = #{type}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="insertJournal" parameterType="com.SpringBoot.MBlog.entity.Admin_Journal">
+		insert into blog_journal(content,created,type,source_user_id)
+		values(#{content},#{created},#{type},#{source_user.id})
+	</insert>
+	
+</mapper>
