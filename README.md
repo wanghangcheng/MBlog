@@ -11,3 +11,6 @@ MBlog博客项目
 
 ##### 如果没有F盘，可以先放在任意盘符下，然后将application.properties文件中的路径的F改为你放的盘符
 
+## 效果显示
+
+![image]()
