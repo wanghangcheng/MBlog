@@ -21,20 +21,20 @@ MBlog博客项目
 #### 效果显示可以点开下方图片链接查看
 ## 效果显示
 
-![image](https://github.com/wanghangcheng/MBlog/tree/master/MdImg/account.PNG)
+![image](https://github.com/wanghangcheng/MBlog/raw/master/MdImg/account.PNG)
 
-![image](https://github.com/wanghangcheng/MBlog/tree/master/MdImg/notify.PNG)
+![image](https://github.com/wanghangcheng/MBlog/raw/master/MdImg/notify.PNG)
 
-![image](https://github.com/wanghangcheng/MBlog/tree/master/MdImg/qq.PNG)
+![image](https://github.com/wanghangcheng/MBlog/raw/master/MdImg/qq.PNG)
 
-![image](https://github.com/wanghangcheng/MBlog/tree/master/MdImg/排行.PNG)
+![image](https://github.com/wanghangcheng/MBlog/raw/master/MdImg/排行.PNG)
 
-![image](https://github.com/wanghangcheng/MBlog/tree/master/MdImg/注册.PNG)
+![image](https://github.com/wanghangcheng/MBlog/raw/master/MdImg/注册.PNG)
 
-![image](https://github.com/wanghangcheng/MBlog/tree/master/MdImg/login.PNG)
+![image](https://github.com/wanghangcheng/MBlog/raw/master/MdImg/login.PNG)
 
-![image](https://github.com/wanghangcheng/MBlog/tree/master/MdImg/follows.PNG)
+![image](https://github.com/wanghangcheng/MBlog/raw/master/MdImg/follows.PNG)
 
-![image](https://github.com/wanghangcheng/MBlog/tree/master/MdImg/article.PNG)
+![image](https://github.com/wanghangcheng/MBlog/raw/master/MdImg/article.PNG)
 
-![image](https://github.com/wanghangcheng/MBlog/tree/master/MdImg/complaint.PNG)
+![image](https://github.com/wanghangcheng/MBlog/raw/master/MdImg/complaint.PNG)
